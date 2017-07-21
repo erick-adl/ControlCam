@@ -1,0 +1,18 @@
+<resources>
+    <string name="app_name">ControlCam</string>
+
+
+
+    <string-array name="BoardsTest">
+        <item>Board1</item>
+        <item>Board2</item>
+        <item>Board3</item>
+        <item>Board4</item>
+        <item>Board5</item>
+        <item>Board6</item>
+        <item>Board7</item>
+        <item>Board8</item>
+        <item>Board9</item>
+    </string-array>
+
+</resources>
