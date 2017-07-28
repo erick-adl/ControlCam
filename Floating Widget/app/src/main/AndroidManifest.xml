@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="info.androidhive.floatingview">
+          package="info.androidhive.controlcam"
+          android:versionCode="2"
+          android:versionName="ControlCam1.1">
 
-    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.WAKE_LOCK" />
-    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+            <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
+            <uses-permission android:name="android.permission.INTERNET" />
+            <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+            <uses-permission android:name="android.permission.WAKE_LOCK" />
+            <!--<uses-permission android:name="android.permission.READ_PHONE_STATE"/>-->
 
     <application
         android:allowBackup="true"
@@ -20,7 +22,7 @@
         </service>
 
 
-        <activity android:name="info.androidhive.floatingview.MainActivity"
+        <activity android:name="info.androidhive.controlcam.MainActivity"
                   >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
@@ -30,10 +32,10 @@
         </activity>
 
         <service
-            android:name="info.androidhive.floatingview.FloatingViewService"
+            android:name="info.androidhive.controlcam.FloatingViewService"
             android:enabled="true"
             android:exported="false"/>
-        <service android:name=".MqttService" />
+        <service android:name="info.androidhive.controlcam.MqttService" />
     </application>
 
 </manifest>
