@@ -130,6 +130,15 @@
                     android:layout_alignParentBottom="true"
                     android:src="@drawable/ic_open"
                     />
+
+                <ImageView
+                    android:id="@+id/save_button"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:src="@drawable/saveicon"
+                    android:layout_alignParentBottom="true"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true" />
             </RelativeLayout>
 
         </RelativeLayout>

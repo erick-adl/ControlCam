@@ -112,6 +112,16 @@ public class FloatingViewService extends MqttService {
             }
         });
 
+        ImageView saveButton = (ImageView) mFloatingView.findViewById(R.id.save_button);
+        saveButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+//                Toast.makeText(FloatingViewService.this, "direita", Toast.LENGTH_LONG).show();
+                publish("ControlCamProject/command/" + Delagate.mainActivity.getSelectedBoard(), "6");
+
+            }
+        });
+
         //Set the close button
         ImageView closeButton = (ImageView) mFloatingView.findViewById(R.id.close_button);
         closeButton.setOnClickListener(new View.OnClickListener() {
