@@ -3,13 +3,14 @@
 #include <WiFiManager.h>
 #include <PubSubClient.h>
 #include <ESP8266WiFi.h>
-//#include <Servo.h>
+#include <Servo.h>
 
 WiFiServer server(80);
 WiFiManager wifiManager;
 WiFiClient espClient;
 PubSubClient client(espClient);
-//Servo myservo;
+Servo myservoX;
+Servo myservoY;
 
 
 const char* mqtt_server = "iot.eclipse.org";
@@ -21,7 +22,11 @@ int value = 0;
 String ID_BOARD;
 
 //SERVO COMMANDS
-//#define SERVO_INIT 0
+#define SERVO_INIT 10
+static int posServoX = 0;
+static int posServoY = 0;
+static int SaveposServoY = 0;
+static int SaveposServoX = 0;
 
 
 //Topics
@@ -35,13 +40,12 @@ void setup() {
   delay(100);
   Serial.println("Starting...");
 
-  //pin teste
-  pinMode(D1, OUTPUT);
-  pinMode(D5, OUTPUT);
+  //  Configure Servo
+  myservoX.attach(D3);
+  myservoX.write(SERVO_INIT);
 
-  //Configure Servo
-  //  myservo.attach(D4);
-  //  myservo.write(SERVO_INIT);
+  myservoY.attach(D4);
+  myservoY.write(SERVO_INIT);
 
 
   /*CONFIG WIFI-MANAGER*/
@@ -118,21 +122,47 @@ void callback(char* topic, byte* payload, unsigned int length) {
   }
 
   if ((char)payload[0] == '1') {
-    Serial.println("Ligando LED 1");
-    digitalWrite(D1, HIGH);
+    if (posServoX <= 180) {
+      posServoX += 10;
+      myservoX.write(posServoX);
+    }
+
   }
   if ((char)payload[0] == '2') {
-    Serial.println("Desligando LED 1");
-    digitalWrite(D1, LOW);
+    if (posServoX > 10) {
+      posServoX -= 10;
+      myservoX.write(posServoX);
+    }
   }
   if ((char)payload[0] == '3') {
-    Serial.println("Desligando LED 2");
-    digitalWrite(D5, HIGH);
+    if (posServoY <= 180) {
+      posServoY += 10;
+      myservoY.write(posServoY);
+    }
   }
 
   if ((char)payload[0] == '4') {
-    Serial.println("Ligando LED 2");
-    digitalWrite(D5, LOW);
+    if (posServoY > 10) {
+      posServoY -= 10;
+      myservoY.write(posServoY);
+    }
+  }
+
+  if ((char)payload[0] == '5') {
+
+    //Use save position
+    posServoY = SaveposServoY;
+    posServoX = SaveposServoX;
+
+    
+    myservoX.write(posServoX);
+    myservoY.write(posServoY);
+  }
+
+  if ((char)payload[0] == '6') {
+    //Save position of servos
+    SaveposServoY = posServoY;
+    SaveposServoX = posServoX;
   }
 
 }
