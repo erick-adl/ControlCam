@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="info.androidhive.controlcam"
-          android:versionCode="2"
-          android:versionName="ControlCam1.1">
+          package="info.androidhive.securitycam"
+          android:versionCode="1"
+          android:versionName="Securitycam1.1">
 
             <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
             <uses-permission android:name="android.permission.INTERNET" />
@@ -22,7 +22,7 @@
         </service>
 
 
-        <activity android:name="info.androidhive.controlcam.MainActivity"
+        <activity android:name=".MainActivity"
                   >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
@@ -32,10 +32,10 @@
         </activity>
 
         <service
-            android:name="info.androidhive.controlcam.FloatingViewService"
+            android:name=".FloatingViewService"
             android:enabled="true"
             android:exported="false"/>
-        <service android:name="info.androidhive.controlcam.MqttService" />
+        <service android:name=".MqttService" />
     </application>
 
 </manifest>
