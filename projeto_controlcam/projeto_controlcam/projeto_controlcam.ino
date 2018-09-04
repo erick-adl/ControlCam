@@ -22,9 +22,10 @@ int value = 0;
 String ID_BOARD;
 
 //SERVO COMMANDS
-#define SERVO_INIT 10
-static int posServoX = 0;
-static int posServoY = 0;
+#define SERVO_X_INIT 50
+#define SERVO_Y_INIT 150
+static int posServoX = SERVO_X_INIT;
+static int posServoY = SERVO_Y_INIT;
 static int SaveposServoY = 0;
 static int SaveposServoX = 0;
 
@@ -42,10 +43,10 @@ void setup() {
 
   //  Configure Servo
   myservoX.attach(D3);
-  myservoX.write(SERVO_INIT);
+  myservoX.write(SERVO_X_INIT);
 
   myservoY.attach(D4);
-  myservoY.write(SERVO_INIT);
+  myservoY.write(SERVO_Y_INIT);
 
 
   /*CONFIG WIFI-MANAGER*/
@@ -55,7 +56,7 @@ void setup() {
 
   //if you get here you have connected to the WiFi
   Serial.print("Connected at: ");
-  Serial.println(wifiManager.getSSID());
+//  Serial.println(wifiManager.getSSID());
   Serial.print("IP address: ");
   Serial.println(WiFi.localIP());
 
@@ -105,7 +106,7 @@ void ConfigWifiManager()
 
   //if you get here you have connected to the WiFi
   Serial.print("connected at: ");
-  Serial.println(wifiManager.getSSID());
+//  Serial.println(wifiManager.getSSID());
   Serial.println("IP address: ");
   Serial.println(WiFi.localIP());
 
@@ -121,30 +122,34 @@ void callback(char* topic, byte* payload, unsigned int length) {
     Serial.println((char)payload[i]);
   }
 
-  if ((char)payload[0] == '1') {
+  if ((char)payload[0] == '2') {
     if (posServoX <= 180) {
       posServoX += 10;
       myservoX.write(posServoX);
+      Serial.println(posServoX);
     }
 
   }
-  if ((char)payload[0] == '2') {
-    if (posServoX > 10) {
+  if ((char)payload[0] == '1') {
+    if (posServoX > 30) {
       posServoX -= 10;
       myservoX.write(posServoX);
+      Serial.println(posServoX);
     }
   }
-  if ((char)payload[0] == '3') {
-    if (posServoY <= 180) {
+  if ((char)payload[0] == '4') {
+    if (posServoY <= 140) {
       posServoY += 10;
       myservoY.write(posServoY);
+      Serial.println(posServoY);
     }
   }
 
-  if ((char)payload[0] == '4') {
-    if (posServoY > 10) {
+  if ((char)payload[0] == '3') {
+    if (posServoY > 110) {
       posServoY -= 10;
       myservoY.write(posServoY);
+      Serial.println(posServoY);
     }
   }
 
