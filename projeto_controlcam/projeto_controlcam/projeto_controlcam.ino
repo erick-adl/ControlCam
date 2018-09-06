@@ -4,6 +4,7 @@
 #include <PubSubClient.h>
 #include <ESP8266WiFi.h>
 #include <Servo.h>
+#include <EEPROM.h>
 
 WiFiServer server(80);
 WiFiManager wifiManager;
@@ -24,10 +25,14 @@ String ID_BOARD;
 //SERVO COMMANDS
 #define SERVO_X_INIT 50
 #define SERVO_Y_INIT 150
+#define MEM_ALOC_SIZE 24
 static int posServoX = SERVO_X_INIT;
 static int posServoY = SERVO_Y_INIT;
 static int SaveposServoY = 0;
 static int SaveposServoX = 0;
+uint8_t SaveposServoX_eeprom;
+uint8_t SaveposServoY_eeprom;
+uint8_t SaveposServoRemember_eeprom;
 
 
 //Topics
@@ -41,12 +46,7 @@ void setup() {
   delay(100);
   Serial.println("Starting...");
 
-  //  Configure Servo
-  myservoX.attach(D3);
-  myservoX.write(SERVO_X_INIT);
 
-  myservoY.attach(D4);
-  myservoY.write(SERVO_Y_INIT);
 
 
   /*CONFIG WIFI-MANAGER*/
@@ -56,12 +56,40 @@ void setup() {
 
   //if you get here you have connected to the WiFi
   Serial.print("Connected at: ");
-//  Serial.println(wifiManager.getSSID());
+  //  Serial.println(wifiManager.getSSID());
   Serial.print("IP address: ");
   Serial.println(WiFi.localIP());
 
   client.setServer(mqtt_server, 1883);
   client.setCallback(callback);
+
+    //Config eeprom
+  EEPROM.begin(MEM_ALOC_SIZE);  
+  
+  SaveposServoRemember_eeprom = EEPROM.read(2);
+  Serial.printf("SaveposServoRemember: %d\n", SaveposServoRemember_eeprom);
+  
+  if(SaveposServoRemember_eeprom != 33){
+    Serial.printf("Salvando primeiros dados...\n");
+    EEPROM.write(2,33);
+    EEPROM.write(0,SERVO_X_INIT);
+    EEPROM.write(1,SERVO_Y_INIT);
+  }else{
+    Serial.printf("Lendo dados eeprom...\n");
+    SaveposServoX_eeprom = EEPROM.read(0);
+    SaveposServoY_eeprom = EEPROM.read(1);    
+    Serial.printf("SaveposServoX: %d\n", SaveposServoX_eeprom);
+    Serial.printf("SaveposServoY: %d\n", SaveposServoY_eeprom);
+  }
+    
+  EEPROM.end();
+
+  //  Configure Servo
+  myservoX.attach(D3);
+  myservoX.write(SaveposServoX_eeprom);
+
+  myservoY.attach(D4);
+  myservoY.write(SaveposServoY_eeprom);
 
 }
 
@@ -106,7 +134,7 @@ void ConfigWifiManager()
 
   //if you get here you have connected to the WiFi
   Serial.print("connected at: ");
-//  Serial.println(wifiManager.getSSID());
+  //  Serial.println(wifiManager.getSSID());
   Serial.println("IP address: ");
   Serial.println(WiFi.localIP());
 
@@ -159,7 +187,7 @@ void callback(char* topic, byte* payload, unsigned int length) {
     posServoY = SaveposServoY;
     posServoX = SaveposServoX;
 
-    
+
     myservoX.write(posServoX);
     myservoY.write(posServoY);
   }
@@ -167,7 +195,12 @@ void callback(char* topic, byte* payload, unsigned int length) {
   if ((char)payload[0] == '6') {
     //Save position of servos
     SaveposServoY = posServoY;
-    SaveposServoX = posServoX;
+    SaveposServoX = posServoX;    
+    //Salvando na eeprom
+    EEPROM.begin(MEM_ALOC_SIZE);        ;
+    EEPROM.write(0,posServoX);
+    EEPROM.write(1,posServoY);     
+    EEPROM.end();
   }
 
 }
