@@ -1,17 +1,29 @@
 package info.androidhive.securitycam;
 
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.provider.Settings;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
-//import android.widget.Toast;
+import android.widget.Toast;
+
+
+import info.androidhive.securitycam.MqttService.LocalBinder;
+
 
 import java.util.ArrayList;
 
@@ -23,6 +35,11 @@ public class MainActivity extends AppCompatActivity {
     private ArrayAdapter<String> adapter;
     private ArrayList<String> arrayList;
     private static String selectedFromList;
+
+
+    boolean mBounded;
+    MqttService mBoundService;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,14 +71,50 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void updateListBoards(String status){
-        if(!arrayList.contains(status)){
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        Intent mIntent = new Intent(this, MqttService.class);
+        bindService(mIntent, mConnection, BIND_AUTO_CREATE);
+    };
+
+    ServiceConnection mConnection = new ServiceConnection() {
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            Toast.makeText(MainActivity.this, "Service is disconnected", Toast.LENGTH_LONG).show();
+            mBounded = false;
+            mBoundService = null;
+        }
+
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            Toast.makeText(MainActivity.this, "Service is connected", Toast.LENGTH_SHORT).show();
+            mBounded = true;
+            LocalBinder mLocalBinder = (LocalBinder)service;
+            mBoundService = mLocalBinder.getService();
+        }
+    };
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if(mBounded) {
+            unbindService(mConnection);
+            mBounded = false;
+        }
+    };
+
+
+    public void updateListBoards(String status) {
+        if (!arrayList.contains(status)) {
             arrayList.add(status);
             adapter.notifyDataSetChanged();
         }
     }
 
-    public void changeStatusConectionView(String status, int color){
+    public void changeStatusConectionView(String status, int color) {
         txStatus = (TextView) findViewById(R.id.tvStatusConnection);
         txStatus.setText(status);
         txStatus.setTextColor(color);
@@ -75,7 +128,6 @@ public class MainActivity extends AppCompatActivity {
         list.setAdapter(adapter);
 
 
-
         findViewById(R.id.btStart).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -87,11 +139,45 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
+        findViewById(R.id.btEdit).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+//                if (getSelectedBoard() != null) {
+
+                    AlertDialog.Builder mBuilder = new AlertDialog.Builder(MainActivity.this);
+                    View mView = getLayoutInflater().inflate(R.layout.dialog_edit, null);
+                    final EditText etNomeEquipamento = (EditText) mView.findViewById(R.id.etNomeEquipamento);
+                    etNomeEquipamento.setHint("Editar " + getSelectedBoard());
+                    Button mLogin = (Button) mView.findViewById(R.id.btSalvar);
+                    mBuilder.setView(mView);
+                    final AlertDialog dialog = mBuilder.create();
+                    dialog.show();
+                    mLogin.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            if (!etNomeEquipamento.getText().toString().isEmpty()) {
+
+                                mBoundService.publish("ControlCamProject/command/" + Delagate.mainActivity.getSelectedBoard(), "etNomeEquipamento.getText().toString()");
+
+                                Toast.makeText(MainActivity.this, "Equipamento será alterado em instantes", Toast.LENGTH_SHORT).show();
+                                dialog.dismiss();
+                            } else {
+                                Toast.makeText(MainActivity.this,
+                                        "Nome de equipamento não pode ser em branco",
+                                        Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
+//                }
+            }
+        });
+
+
     }
 
 
-    public String getSelectedBoard(){
-        if(list.getCheckedItemPosition() < 0){
+    public String getSelectedBoard() {
+        if (list.getCheckedItemPosition() < 0) {
             return null;
         }
         return adapter.getItem(list.getCheckedItemPosition());
@@ -104,7 +190,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_BACK ) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
             Intent intent = new Intent(this, MainActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             intent.putExtra("EXIT", true);
@@ -112,7 +198,6 @@ public class MainActivity extends AppCompatActivity {
         }
         return super.onKeyDown(keyCode, event);
     }
-
 
 
     @Override

@@ -30,7 +30,7 @@ import java.util.ArrayList;
 
 public class MqttService extends Service implements MqttCallback, IMqttActionListener {
 
-    private final IBinder binder = new MyBinder();
+    private final IBinder mBinder = new LocalBinder();
 
     private MqttAndroidClient mqttClient;
     private MqttConnectOptions mqttConnectOptions;
@@ -55,16 +55,16 @@ public class MqttService extends Service implements MqttCallback, IMqttActionLis
     public MqttService() {
     }
 
-    public class MyBinder extends Binder {
-        public MqttService getService() {
+    public class LocalBinder extends Binder {
+        MqttService getService() {
             return MqttService.this;
         }
     }
 
-    @Nullable
+
     @Override
     public IBinder onBind(Intent intent) {
-        return binder;
+        return mBinder;
     }
 
     @Override
