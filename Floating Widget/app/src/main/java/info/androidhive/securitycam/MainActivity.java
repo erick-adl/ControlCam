@@ -142,7 +142,7 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.btEdit).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                if (getSelectedBoard() != null) {
+                if (getSelectedBoard() != null) {
 
                     AlertDialog.Builder mBuilder = new AlertDialog.Builder(MainActivity.this);
                     View mView = getLayoutInflater().inflate(R.layout.dialog_edit, null);
@@ -157,9 +157,10 @@ public class MainActivity extends AppCompatActivity {
                         public void onClick(View view) {
                             if (!etNomeEquipamento.getText().toString().isEmpty()) {
 
-                                mBoundService.publish("ControlCamProject/command/" + Delagate.mainActivity.getSelectedBoard(), "etNomeEquipamento.getText().toString()");
+                                mBoundService.publish("ControlCamProject/setname/" + Delagate.mainActivity.getSelectedBoard(), etNomeEquipamento.getText().toString());
 
                                 Toast.makeText(MainActivity.this, "Equipamento será alterado em instantes", Toast.LENGTH_SHORT).show();
+                                
                                 dialog.dismiss();
                             } else {
                                 Toast.makeText(MainActivity.this,
@@ -168,7 +169,7 @@ public class MainActivity extends AppCompatActivity {
                             }
                         }
                     });
-//                }
+                }
             }
         });
 

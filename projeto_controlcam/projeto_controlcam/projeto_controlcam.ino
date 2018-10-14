@@ -1,3 +1,15 @@
+/*
+ * Eepron addres:
+ * 0 = Servo pos x
+ * 1 = Servo pos x
+ * 2 = Servo saved int
+ * 3 = Name chip saved once
+ * 4 = Size name chip
+ * 5...X Name Chip
+ */
+
+
+
 #include <DNSServer.h>
 #include <ESP8266WebServer.h>
 #include <WiFiManager.h>
@@ -13,6 +25,9 @@ PubSubClient client(espClient);
 Servo myservoX;
 Servo myservoY;
 
+char example_string[] = "~New eeprom string";
+const int eeprom_size = 50; // values saved in eeprom should never exceed 500 bytes
+char eeprom_buffer[eeprom_size];
 
 const char* mqtt_server = "iot.eclipse.org";
 
@@ -20,12 +35,16 @@ long lastMsg = 0;
 char msg[50];
 int value = 0;
 
+String topic_command;
+String topic_setname;
+
 String ID_BOARD;
+String temp;
 
 //SERVO COMMANDS
 #define SERVO_X_INIT 50
 #define SERVO_Y_INIT 150
-#define MEM_ALOC_SIZE 24
+#define MEM_ALOC_SIZE 48
 static int posServoX = SERVO_X_INIT;
 static int posServoY = SERVO_Y_INIT;
 static int SaveposServoY = 0;
@@ -33,6 +52,9 @@ static int SaveposServoX = 0;
 uint8_t SaveposServoX_eeprom;
 uint8_t SaveposServoY_eeprom;
 uint8_t SaveposServoRemember_eeprom;
+
+uint8_t SavedNameChip_eeprom;
+uint8_t SavedSizeNameChip_eeprom;
 
 
 //Topics
@@ -45,13 +67,31 @@ void setup() {
   Serial.begin(115200);
   delay(100);
   Serial.println("Starting...");
+  
+    //Config eeprom
+  EEPROM.begin(MEM_ALOC_SIZE);  
+  
+  SavedNameChip_eeprom = EEPROM.read(3);
+  SavedSizeNameChip_eeprom = EEPROM.read(4);
+  Serial.printf("SavedNameChip_eeprom: %d\n", SavedNameChip_eeprom);
+  Serial.printf("SavedSizeNameChip_eeprom: %d\n", SavedSizeNameChip_eeprom);
+  
+
+  if(SavedNameChip_eeprom == 33){
+      Serial.printf("Lendo nome do chip na eeprom...\n");
+      read_string_from_eeprom(eeprom_buffer);
+      ID_BOARD = eeprom_buffer;
+      
+    }else{
+      ID_BOARD = "CC" + String(ESP.getChipId());
+      Serial.println(temp);              
+    }
+    
 
 
 
-
-  /*CONFIG WIFI-MANAGER*/
-  ID_BOARD = "CC" + String(ESP.getChipId());
-  Serial.println(ID_BOARD);
+  
+  /*CONFIG WIFI-MANAGER*/  
   wifiManager.autoConnect(ID_BOARD.c_str());
 
   //if you get here you have connected to the WiFi
@@ -63,8 +103,7 @@ void setup() {
   client.setServer(mqtt_server, 1883);
   client.setCallback(callback);
 
-    //Config eeprom
-  EEPROM.begin(MEM_ALOC_SIZE);  
+
   
   SaveposServoRemember_eeprom = EEPROM.read(2);
   Serial.printf("SaveposServoRemember: %d\n", SaveposServoRemember_eeprom);
@@ -142,14 +181,32 @@ void ConfigWifiManager()
 
 
 void callback(char* topic, byte* payload, unsigned int length) {
-  Serial.print("Message arrived in topic [");
+  Serial.print("Message arrived in topic {{");
   Serial.print(topic);
-  Serial.print("] ");
-
+  Serial.print("}} ");
+  Serial.print("Payload {{");    
   for (int i = 0; i < length; i++) {
-    Serial.println((char)payload[i]);
+    Serial.print((char)payload[i]);
+  }
+  Serial.print("}}\n");
+
+  String str(topic);
+  String strFromChar;
+  
+  String topic2 = topic;
+  
+  if (topic2 == topic_setname){
+    Serial.print("Vamo trocar o nome!");
+    
+    EEPROM.begin(MEM_ALOC_SIZE);    
+    save_string_to_eeprom( (char*)payload,length);
+    read_string_from_eeprom(eeprom_buffer);
+    ID_BOARD = eeprom_buffer;
+    EEPROM.end();
+      
   }
 
+  
   if ((char)payload[0] == '2') {
     if (posServoX <= 180) {
       posServoX += 10;
@@ -197,7 +254,7 @@ void callback(char* topic, byte* payload, unsigned int length) {
     SaveposServoY = posServoY;
     SaveposServoX = posServoX;    
     //Salvando na eeprom
-    EEPROM.begin(MEM_ALOC_SIZE);        ;
+    EEPROM.begin(MEM_ALOC_SIZE);
     EEPROM.write(0,posServoX);
     EEPROM.write(1,posServoY);     
     EEPROM.end();
@@ -217,8 +274,10 @@ void reconnect() {
       client.publish(topic_status, ID_BOARD.c_str());
 
       // ... and resubscribe
-      String topic_command = "ControlCamProject/command/" + ID_BOARD;
+      topic_command = "ControlCamProject/command/" + ID_BOARD;
+      topic_setname = "ControlCamProject/setname/" + ID_BOARD;
       client.subscribe(topic_command.c_str());
+      client.subscribe(topic_setname.c_str());
     } else {
       Serial.print("failed, rc=");
       Serial.print(client.state());
@@ -227,4 +286,28 @@ void reconnect() {
       delay(5000);
     }
   }
+}
+
+void save_string_to_eeprom(char *stringIn, unsigned int length){
+
+    EEPROM.write(4, length);   
+  for(int i = 0; i < length; i++){    
+      EEPROM.write(i + 5, stringIn[i]);   
+  }
+}
+
+
+void read_string_from_eeprom(char *bufferIn){
+
+  Serial.print("bufferIn sizeof: ");
+  Serial.print(sizeof(bufferIn));  
+  Serial.println();  
+  unsigned int length = EEPROM.read(4);
+  
+  for(int i = 0; i < length; i++){
+  
+    bufferIn[i] = EEPROM.read(i + 5);
+  
+  }
+  Serial.println(bufferIn);
 }
