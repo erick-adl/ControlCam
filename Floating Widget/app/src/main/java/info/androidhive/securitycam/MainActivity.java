@@ -160,7 +160,7 @@ public class MainActivity extends AppCompatActivity {
                                 mBoundService.publish("ControlCamProject/setname/" + Delagate.mainActivity.getSelectedBoard(), etNomeEquipamento.getText().toString());
 
                                 Toast.makeText(MainActivity.this, "Equipamento será alterado em instantes", Toast.LENGTH_SHORT).show();
-                                
+                                arrayList.clear();
                                 dialog.dismiss();
                             } else {
                                 Toast.makeText(MainActivity.this,

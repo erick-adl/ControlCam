@@ -1,105 +1,79 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="120sp"
-    android:layout_height="120sp"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/expanded_container"
+    android:visibility="visible"
+    android:layout_width="match_parent"
+    android:layout_height="60sp"
+    android:orientation="horizontal"
     xmlns:tools="http://schemas.android.com/tools"
-    android:background="@drawable/joy"
-    >
-
-
+    android:background="@drawable/retan">
 
     <ImageView
         android:id="@+id/esq_btn"
-        android:layout_width="40dp"
-        android:layout_height="50dp"
-        android:layout_gravity="center_vertical"
+        android:layout_width="45sp"
+        android:layout_height="45sp"
+        android:layout_marginTop="8sp"
         android:src="@mipmap/ic_esquerda"
-        tools:ignore="ContentDescription"
-        android:layout_centerVertical="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
-
-    <ImageView
-        android:id="@+id/center_btn"
-        android:layout_width="20dp"
-        android:layout_height="20dp"
-        android:layout_gravity="center_horizontal"
-        tools:ignore="ContentDescription"
-        android:background="#000000"
-        android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true" />
+        tools:ignore="ContentDescription" />
 
     <!--up button-->
     <ImageView
         android:id="@+id/up_btn"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_gravity="center_vertical"
+        android:layout_width="45sp"
+        android:layout_height="45sp"
+        android:layout_marginTop="8sp"
         android:src="@mipmap/ic_cima"
-        tools:ignore="ContentDescription"
-        android:layout_alignParentTop="true"
-        android:layout_toRightOf="@+id/esq_btn"
-        android:layout_toEndOf="@+id/esq_btn" />
+        tools:ignore="ContentDescription" />
 
     <!--down button-->
     <ImageView
         android:id="@+id/down_btn"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_gravity="center_vertical"
+        android:layout_width="45sp"
+        android:layout_height="45sp"
+        android:layout_marginTop="8sp"
         android:src="@mipmap/ic_baixo"
-        tools:ignore="ContentDescription"
-        android:layout_below="@+id/esq_btn"
-        android:layout_toRightOf="@+id/esq_btn"
-        android:layout_toEndOf="@+id/esq_btn" />
+        tools:ignore="ContentDescription" />
 
     <!--Right button-->
     <ImageView
         android:id="@+id/dir_btn"
-        android:layout_width="40dp"
-        android:layout_height="50dp"
-        android:layout_gravity="center_vertical"
+        android:layout_width="45sp"
+        android:layout_height="45sp"
+        android:layout_marginTop="8sp"
         android:src="@mipmap/ic_direita"
-        tools:ignore="ContentDescription"
-        android:layout_alignTop="@+id/esq_btn"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
-
-    <RelativeLayout
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true">
+        tools:ignore="ContentDescription" />
 
     <ImageView
-        android:id="@+id/close_button"
-        android:layout_width="20dp"
-        android:layout_height="20dp"
-        android:src="@drawable/ic_close"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
+        android:id="@+id/center_btn"
+        android:layout_width="25sp"
+        android:layout_height="25sp"
+        android:layout_marginTop="20sp"
+        android:layout_marginLeft="10sp"
+        android:background="#000000"
+        tools:ignore="ContentDescription" />
 
     <ImageView
         android:id="@+id/save_button"
-        android:layout_width="20dp"
-        android:layout_height="20dp"
-        android:src="@drawable/saveicon"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:layout_width="35sp"
+        android:layout_height="35sp"
+        android:layout_marginTop="15sp"
+        android:layout_marginLeft="15sp"
+        android:src="@drawable/saveicon" />
 
     <ImageView
         android:id="@+id/open_button"
-        android:layout_width="20dp"
-        android:layout_height="20dp"
-        android:src="@drawable/ic_open"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
-    </RelativeLayout>
+        android:layout_width="35sp"
+        android:layout_height="35sp"
+        android:layout_marginTop="15sp"
+        android:layout_marginLeft="10sp"
+        android:src="@drawable/ic_open" />
 
+    <ImageView
+        android:id="@+id/close_button"
+        android:layout_width="35sp"
+        android:layout_height="35sp"
+        android:layout_marginTop="15sp"
+        android:layout_marginLeft="10sp"
+        android:src="@drawable/ic_close" />
 
-</RelativeLayout>
+</LinearLayout>
