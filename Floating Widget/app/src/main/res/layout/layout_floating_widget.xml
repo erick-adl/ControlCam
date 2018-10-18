@@ -40,87 +40,97 @@
         </RelativeLayout>
 
         <!--View while view is expanded-->
-        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        <GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
             android:id="@+id/expanded_container"
             android:visibility="gone"
-            android:layout_width="380sp"
-            android:layout_height="70sp"
-            android:orientation="horizontal"
+            android:layout_width="wrap_content"
+            android:rowCount="1"
+            android:columnCount="7"
+            android:layout_height="60sp"
             xmlns:tools="http://schemas.android.com/tools"
-            android:background="@drawable/retan">
+            android:background="@drawable/borda">
 
             <ImageView
                 android:id="@+id/esq_btn"
-                android:layout_width="45sp"
+                android:layout_marginStart="8sp"
+                android:layout_width="40dp"
                 android:layout_height="45sp"
-                android:layout_marginTop="13sp"
-                android:src="@mipmap/ic_esquerda"
+                android:layout_marginTop="8sp"
+                android:layout_marginLeft="8sp"
+                android:src="@drawable/nopress_1"
                 tools:ignore="ContentDescription" />
 
             <!--up button-->
             <ImageView
                 android:id="@+id/up_btn"
-                android:layout_width="45sp"
+                android:layout_width="40dp"
                 android:layout_height="45sp"
-                android:layout_marginTop="13sp"
-                android:src="@mipmap/ic_cima"
+                android:layout_marginTop="8sp"
+                android:layout_marginStart="8sp"
+                android:layout_marginLeft="8sp"
+                android:src="@drawable/nopress_2"
                 tools:ignore="ContentDescription" />
 
             <!--down button-->
             <ImageView
                 android:id="@+id/down_btn"
-                android:layout_width="45sp"
+                android:layout_width="40dp"
                 android:layout_height="45sp"
-                android:layout_marginTop="13sp"
-                android:src="@mipmap/ic_baixo"
+                android:layout_marginTop="8sp"
+                android:layout_marginStart="8sp"
+                android:layout_marginLeft="8sp"
+                android:src="@drawable/nopress_3"
                 tools:ignore="ContentDescription" />
 
             <!--Right button-->
             <ImageView
                 android:id="@+id/dir_btn"
-                android:layout_width="45sp"
+                android:layout_width="40dp"
                 android:layout_height="45sp"
-                android:layout_marginTop="13sp"
-                android:src="@mipmap/ic_direita"
+                android:layout_marginTop="8sp"
+                android:layout_marginStart="8sp"
+                android:layout_marginLeft="8sp"
+                android:src="@drawable/nopress_4"
                 tools:ignore="ContentDescription" />
 
             <ImageView
                 android:id="@+id/center_btn"
-                android:layout_width="25sp"
-                android:layout_height="25sp"
-                android:layout_marginTop="25sp"
-                android:layout_marginLeft="10sp"
-                android:background="#000000"
+                android:layout_width="40dp"
+                android:layout_height="45sp"
+                android:layout_marginTop="8sp"
+                android:layout_marginStart="8sp"
+                android:layout_marginLeft="8sp"
+                android:src="@drawable/nopress_5"
                 tools:ignore="ContentDescription" />
 
             <ImageView
                 android:id="@+id/save_button"
-                android:layout_width="35sp"
-                android:layout_height="35sp"
-                android:layout_marginTop="20sp"
-                android:layout_marginLeft="20sp"
-                android:src="@drawable/saveicon" />
+                android:layout_width="40dp"
+                android:layout_height="45sp"
+                android:layout_marginTop="8sp"
+                android:layout_marginStart="8sp"
+                android:layout_marginLeft="8sp"
+                android:src="@drawable/nopress_6" />
 
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="10sp"
                 android:orientation="vertical">
-            <ImageView
-                android:id="@+id/open_button"
-                android:layout_width="30sp"
-                android:layout_height="30sp"
-                android:layout_marginTop="5sp"
-                android:src="@drawable/ic_open" />
-            <ImageView
-                android:id="@+id/close_button"
-                android:layout_width="30sp"
-                android:layout_height="30sp"
-                android:layout_marginBottom="4sp"
-                android:src="@drawable/ic_close" />
-        </LinearLayout>
+                <ImageView
+                    android:id="@+id/open_button"
+                    android:layout_width="35sp"
+                    android:layout_height="30sp"
+                    android:layout_marginTop="4sp"
+                    android:src="@drawable/nopress_7"/>
+                <ImageView
+                    android:id="@+id/close_button"
+                    android:layout_width="35sp"
+                    android:layout_height="20sp"
+                    android:layout_marginBottom="10sp"
+                    android:src="@drawable/press_8"/>
+            </LinearLayout>
 
-        </LinearLayout>
+        </GridLayout>
 
 
     </RelativeLayout>
