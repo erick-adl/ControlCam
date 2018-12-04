@@ -58,8 +58,8 @@ uint8_t SavedSizeNameChip_eeprom;
 
 
 //Topics
-const char* topic_main = "ControlCamProject/";
-const char* topic_status = "ControlCamProject/online-boards";
+const char* topic_main = "smart-owl/";
+const char* topic_status = "smart-owl/online-boards";
 
 void setup() {
 
@@ -190,24 +190,31 @@ void callback(char* topic, byte* payload, unsigned int length) {
   }
   Serial.print("}}\n");
 
-  String str(topic);
-  String strFromChar;
+  String stringPayload = String((char*)payload);
+  String stringTopic = String((char*)topic);
+   
+  Serial.print("topic_setname = ");
+  Serial.println(topic_setname);
+
+  Serial.print("stringPayload = ");
+  Serial.println(stringPayload);
+
+  Serial.print("stringTopic = ");
+  Serial.println(stringTopic);
   
-  String topic2 = topic;
   
-  if (topic2 == topic_setname){
-    Serial.print("Vamo trocar o nome!");
-    
+  if (stringTopic.equals(topic_setname)) {  
+    Serial.print("### TROCANDO NOME DA PLACA! ###");    
     EEPROM.begin(MEM_ALOC_SIZE);    
     save_string_to_eeprom( (char*)payload,length);
     read_string_from_eeprom(eeprom_buffer);
     ID_BOARD = eeprom_buffer;
     EEPROM.end();
-      
+    ESP.restart();
   }
 
-  
-  if ((char)payload[0] == '2') {
+
+  if (stringPayload.equals("button_left")) {
     if (posServoX <= 180) {
       posServoX += 10;
       myservoX.write(posServoX);
@@ -215,14 +222,14 @@ void callback(char* topic, byte* payload, unsigned int length) {
     }
 
   }
-  if ((char)payload[0] == '1') {
+  if (stringPayload.equals("button_right")) {
     if (posServoX > 30) {
       posServoX -= 10;
       myservoX.write(posServoX);
       Serial.println(posServoX);
     }
   }
-  if ((char)payload[0] == '4') {
+  if (stringPayload.equals("button_up")) {
     if (posServoY <= 140) {
       posServoY += 10;
       myservoY.write(posServoY);
@@ -230,7 +237,7 @@ void callback(char* topic, byte* payload, unsigned int length) {
     }
   }
 
-  if ((char)payload[0] == '3') {
+  if (stringPayload.equals("button_down")) {
     if (posServoY > 110) {
       posServoY -= 10;
       myservoY.write(posServoY);
@@ -238,7 +245,7 @@ void callback(char* topic, byte* payload, unsigned int length) {
     }
   }
 
-  if ((char)payload[0] == '5') {
+  if (stringPayload.equals("button_center")) {
 
     //Use save position
     posServoY = SaveposServoY;
@@ -249,7 +256,7 @@ void callback(char* topic, byte* payload, unsigned int length) {
     myservoY.write(posServoY);
   }
 
-  if ((char)payload[0] == '6') {
+  if (stringPayload.equals("button_save")) {
     //Save position of servos
     SaveposServoY = posServoY;
     SaveposServoX = posServoX;    
@@ -274,8 +281,8 @@ void reconnect() {
       client.publish(topic_status, ID_BOARD.c_str());
 
       // ... and resubscribe
-      topic_command = "ControlCamProject/command/" + ID_BOARD;
-      topic_setname = "ControlCamProject/setname/" + ID_BOARD;
+      topic_command = "smart-owl/command/" + ID_BOARD;
+      topic_setname = "smart-owl/setname/" + ID_BOARD;
       client.subscribe(topic_command.c_str());
       client.subscribe(topic_setname.c_str());
     } else {
